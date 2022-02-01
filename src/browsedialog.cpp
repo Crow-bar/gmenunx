@@ -21,8 +21,10 @@ Dialog(gmenu2x, title, description, icon) {
 }
 
 bool BrowseDialog::exec(string _path) {
-	this->bg = new Surface(gmenu2x->bg); // needed to redraw on child screen return
-
+/*
+	allocated in the Dialog constructor
+	this->bg = new Surface(gmenu2x->bg);// needed to redraw on child screen return
+*/
 	uint32_t i, iY, firstElement = 0, padding = 6;
 	int32_t animation = 0;
 	uint32_t rowHeight = gmenu2x->font->height() + 1;
@@ -66,7 +68,7 @@ bool BrowseDialog::exec(string _path) {
 			if (!(preview.empty() || preview == "#"))
 				gmenu2x->setBackground(this->bg, preview);
 			else
-				gmenu2x->bg->blit(this->bg,0,0);
+				gmenu2x->bg->blit(this->bg, 0, 0);
 		}
 
 		this->description = path;
@@ -106,7 +108,7 @@ bool BrowseDialog::exec(string _path) {
 			}
 
 			if (gmenu2x->confStr["previewMode"] != "Backdrop") {
-				Surface *anim = new Surface(gmenu2x->s);
+				Surface anim(gmenu2x->s);
 				if (preview.empty() || preview == "#") { // hide preview
 					 while (animation > 0) {
 						animation -= gmenu2x->skinConfInt["previewWidth"] / 8;
@@ -114,7 +116,7 @@ bool BrowseDialog::exec(string _path) {
 						if (animation < 0)
 							animation = 0;
 
-						anim->blit(gmenu2x->s,0,0);
+						anim.blit(gmenu2x->s, 0, 0);
 						gmenu2x->s->box(gmenu2x->platform->w - animation, gmenu2x->listRect.y, gmenu2x->skinConfInt["previewWidth"] + 2 * padding, gmenu2x->listRect.h, gmenu2x->skinConfColor["previewBg"]);
 						gmenu2x->s->flip();
 						SDL_Delay(10);
@@ -133,7 +135,7 @@ bool BrowseDialog::exec(string _path) {
 						if (animation > gmenu2x->skinConfInt["previewWidth"] + 2 * padding)
 							animation = gmenu2x->skinConfInt["previewWidth"] + 2 * padding;
 
-						anim->blit(gmenu2x->s,0,0);
+						anim.blit(gmenu2x->s, 0, 0);
 						gmenu2x->s->box(gmenu2x->platform->w - animation, gmenu2x->listRect.y, gmenu2x->skinConfInt["previewWidth"] + 2 * padding, gmenu2x->listRect.h, gmenu2x->skinConfColor["previewBg"]);
 						gmenu2x->sc[preview + "scaled"]->blit(gmenu2x->s, {gmenu2x->platform->w - animation + padding, gmenu2x->listRect.y + padding, gmenu2x->skinConfInt["previewWidth"], gmenu2x->listRect.h - 2 * padding}, HAlignCenter | VAlignMiddle, gmenu2x->platform->h);
 						gmenu2x->s->flip();
@@ -144,6 +146,9 @@ bool BrowseDialog::exec(string _path) {
 			gmenu2x->drawScrollBar(numRows, size(), firstElement, gmenu2x->listRect);
 			gmenu2x->s->flip();
 		}
+
+		if(!preview.empty())
+			gmenu2x->sc.del(preview + "scaled");
 
 		do {
 			inputAction = gmenu2x->input->update();

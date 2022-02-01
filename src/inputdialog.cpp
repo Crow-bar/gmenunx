@@ -99,7 +99,7 @@ void InputDialog::setKeyboard(int kb) {
 }
 
 bool InputDialog::exec() {
-	Surface *bg = new Surface(gmenu2x->s);
+	Surface bg(gmenu2x->s);
 
 	bool inputAction = false;
 	SDL_Rect box = {gmenu2x->listRect.x + 2, 0, gmenu2x->listRect.w - 4, gmenu2x->font->height() + 4};
@@ -108,14 +108,14 @@ bool InputDialog::exec() {
 	uint32_t caretTick = 0, curTick;
 	bool caretOn = true;
 
-	bg->box(gmenu2x->bottomBarRect, (RGBAColor){0,0,0,255});
+	bg.box(gmenu2x->bottomBarRect, (RGBAColor){0,0,0,255});
 
 	gmenu2x->s->box(gmenu2x->bottomBarRect, gmenu2x->skinConfColor["bottomBarBg"]);
 
-	gmenu2x->drawButton(bg, "r", gmenu2x->tr["Space"],
-	gmenu2x->drawButton(bg, "l", gmenu2x->tr["Backspace"],
-	gmenu2x->drawButton(bg, "y", gmenu2x->tr["Shift"],
-	gmenu2x->drawButton(bg, "start", gmenu2x->tr["Save"]
+	gmenu2x->drawButton(&bg, "r", gmenu2x->tr["Space"],
+	gmenu2x->drawButton(&bg, "l", gmenu2x->tr["Backspace"],
+	gmenu2x->drawButton(&bg, "y", gmenu2x->tr["Shift"],
+	gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Save"]
 	))));
 
 	while (true) {
@@ -123,7 +123,7 @@ bool InputDialog::exec() {
 			SDL_RemoveTimer(wakeUpTimer);
 		wakeUpTimer = SDL_AddTimer(500, gmenu2x->input->wakeUp, (void*)false);
 
-		bg->blit(gmenu2x->s,0,0);
+		bg.blit(gmenu2x->s,0,0);
 
 		gmenu2x->s->box(gmenu2x->listRect.x, box.y - 2, gmenu2x->listRect.w, box.h + 2, (RGBAColor){0,0,0,220});
 		gmenu2x->s->box(box, (RGBAColor){0x33,0x33,0x33,220});

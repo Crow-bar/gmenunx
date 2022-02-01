@@ -110,6 +110,7 @@ void GMenu2X::quit(bool all) {
 	delete input;
 	delete menu;
 	delete s;
+	delete bg;
 	delete font;
 	delete titlefont;
 
@@ -1583,11 +1584,11 @@ int GMenu2X::setVolume(int val, bool popup) {
 	val = constrain(val, 0, 100);
 
 	if (popup) {
-		Surface *bg = new Surface(s);
+		Surface bg(s);
 
 		powerManager->clearTimer();
 		while (true) {
-			drawSlider(val, 0, 100, menu->getVolumeIcon(platform->getVolumeMode(val)), bg);
+			drawSlider(val, 0, 100, menu->getVolumeIcon(platform->getVolumeMode(val)), &bg);
 
 			input->update();
 
@@ -1602,7 +1603,7 @@ int GMenu2X::setVolume(int val, bool popup) {
 			val = constrain(val, 0, 100);
 		}
 
-		bg->blit(s, 0, 0);
+		bg.blit(s, 0, 0);
 		s->flip();
 
 		powerManager->resetSuspendTimer();
@@ -1619,11 +1620,11 @@ int GMenu2X::setBacklight(int val, bool popup) {
 		int backlightStep = 10;
 		val = constrain(val, 5, 100);
 
-		Surface *bg = new Surface(s);
+		Surface bg(s);
 
 		powerManager->clearTimer();
 		while (true) {
-			drawSlider(val, 0, 100, menu->getBrightnessIcon(val), bg);
+			drawSlider(val, 0, 100, menu->getBrightnessIcon(val), &bg);
 
 			input->update();
 
@@ -1641,7 +1642,7 @@ int GMenu2X::setBacklight(int val, bool popup) {
 			val = constrain(val, 5, 100);
 		}
 
-		bg->blit(s, 0, 0);
+		bg.blit(s, 0, 0);
 		s->flip();
 
 		powerManager->resetSuspendTimer();
