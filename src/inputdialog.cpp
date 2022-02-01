@@ -119,7 +119,8 @@ bool InputDialog::exec() {
 	))));
 
 	while (true) {
-		SDL_RemoveTimer(wakeUpTimer);
+		if(wakeUpTimer)
+			SDL_RemoveTimer(wakeUpTimer);
 		wakeUpTimer = SDL_AddTimer(500, gmenu2x->input->wakeUp, (void*)false);
 
 		bg->blit(gmenu2x->s,0,0);
@@ -237,6 +238,8 @@ int InputDialog::drawVirtualKeyboard() {
 }
 
 InputDialog::~InputDialog() {
-	SDL_RemoveTimer(wakeUpTimer); wakeUpTimer = NULL;
+	if(wakeUpTimer)
+		SDL_RemoveTimer(wakeUpTimer);
+	wakeUpTimer = NULL;
 	gmenu2x->input->dropEvents(); // prevent passing input away
 }

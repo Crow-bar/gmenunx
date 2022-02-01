@@ -8,7 +8,9 @@
 SDL_TimerID alphanum_timer = NULL;
 
 uint32_t hideAlphaNum(uint32_t interval, void *param) {
-	SDL_RemoveTimer(alphanum_timer); alphanum_timer = NULL;
+	if(alphanum_timer)
+		SDL_RemoveTimer(alphanum_timer);
+	alphanum_timer = NULL;
 	InputManager::wakeUp(0, (void*)false);
 	return 0;
 };
@@ -148,8 +150,9 @@ bool BrowseDialog::exec(string _path) {
 		} while (!inputAction);
 
 		if (gmenu2x->inputCommonActions(inputAction)) continue;
-
-		SDL_RemoveTimer(alphanum_timer); alphanum_timer = NULL;
+		if(alphanum_timer)
+			SDL_RemoveTimer(alphanum_timer);
+		alphanum_timer = NULL;
 
 		if (gmenu2x->input->isActive(UP)) {
 			selected--;
@@ -221,7 +224,9 @@ void BrowseDialog::directoryEnter(string path) {
 	browse(path);
 	onChangeDir();
 
-	SDL_RemoveTimer(flipScreenTimer); flipScreenTimer = NULL;
+	if(flipScreenTimer)
+		SDL_RemoveTimer(flipScreenTimer);
+	flipScreenTimer = NULL;
 	gmenu2x->powerManager->resetSuspendTimer();
 }
 

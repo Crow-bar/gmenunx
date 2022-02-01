@@ -25,7 +25,9 @@ void PowerManager::setPowerTimeout(uint32_t powerTimeout) {
 };
 
 void PowerManager::clearTimer() {
-	SDL_RemoveTimer(powerTimer); powerTimer = NULL;
+	if(powerTimer)
+		SDL_RemoveTimer(powerTimer);
+	powerTimer = NULL;
 };
 
 void PowerManager::resetSuspendTimer() {

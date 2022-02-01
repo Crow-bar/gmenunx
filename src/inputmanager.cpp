@@ -137,8 +137,12 @@ gmenu2x(gmenu2x) {
 }
 
 InputManager::~InputManager() {
-	SDL_RemoveTimer(timer); timer = NULL;
-	SDL_RemoveTimer(hardwareMonitorTimer); hardwareMonitorTimer = NULL;
+	if(timer)
+		SDL_RemoveTimer(timer);
+	timer = NULL;
+	if(hardwareMonitorTimer)
+		SDL_RemoveTimer(hardwareMonitorTimer);
+	hardwareMonitorTimer = NULL;
 	for (uint32_t x = 0; x < joysticks.size(); x++)
 		if (SDL_JoystickOpened(x))
 			SDL_JoystickClose(joysticks[x]);
@@ -217,7 +221,8 @@ bool InputManager::update(bool wait) {
 	}
 
 	if (active >= 0) {
-		SDL_RemoveTimer(timer);
+		if(timer)
+			SDL_RemoveTimer(timer);
 		timer = SDL_AddTimer(actions[active].interval, wakeUp, (void*)false);
 	}
 
@@ -237,7 +242,9 @@ bool InputManager::combo() { // eegg
 
 void InputManager::dropEvents(bool drop_timer) {
 	if (drop_timer) {
-		SDL_RemoveTimer(timer); timer = NULL;
+		if(timer)
+			SDL_RemoveTimer(timer);
+		timer = NULL;
 	}
 
 	for (uint32_t x = 0; x < actions.size(); x++) {
@@ -272,7 +279,9 @@ void InputManager::setInterval(int ms, int action) {
 }
 
 uint32_t InputManager::wakeUp(uint32_t interval, void *repeat) {
-	SDL_RemoveTimer(timer); timer = NULL;
+	if(timer)
+		SDL_RemoveTimer(timer);
+	timer = NULL;
 	SDL_Event event;
 	event.type = SDL_USEREVENT;
 	event.user.code = WAKE_UP;

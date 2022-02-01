@@ -676,7 +676,9 @@ void Menu::drawSectionBar() {
 			gmenu2x->s->write(gmenu2x->font, gmenu2x->tr[getSectionName()], sx + gmenu2x->skinConfInt["sectionBarSize"] / 2 , sy + gmenu2x->skinConfInt["sectionBarSize"], HAlignCenter | VAlignBottom);
 		}
 	} else {
-		SDL_RemoveTimer(sectionChangedTimer); sectionChangedTimer = NULL;
+		if(sectionChangedTimer)
+			SDL_RemoveTimer(sectionChangedTimer);
+		sectionChangedTimer = NULL;
 	}
 
 	if (gmenu2x->skinConfInt["sectionBar"] == SB_CLASSIC) {
@@ -707,7 +709,9 @@ void Menu::drawStatusBar() {
 		x += iconWidth + iconPadding;
 		gmenu2x->s->write(gmenu2x->font, iconDescription.c_str(), x, gmenu2x->bottomBarRect.y + gmenu2x->bottomBarRect.h / 2, VAlignMiddle, gmenu2x->skinConfColor["fontAlt"], gmenu2x->skinConfColor["fontAltOutline"]);
 	} else {
-		SDL_RemoveTimer(iconChangedTimer); iconChangedTimer = NULL;
+		if(iconChangedTimer)
+			SDL_RemoveTimer(iconChangedTimer);
+		iconChangedTimer = NULL;
 
 		// TODO: use drawButton(gmenu2x->s, iconVolume[volume_mode], confInt["globalVolume"], x);
 
@@ -901,8 +905,12 @@ void Menu::exec() {
 		}
 
 		if (gmenu2x->input->isActive(CANCEL) || gmenu2x->input->isActive(CONFIRM) || gmenu2x->input->isActive(SETTINGS) || gmenu2x->input->isActive(MENU)) {
-			SDL_RemoveTimer(sectionChangedTimer); sectionChangedTimer = NULL;
-			SDL_RemoveTimer(iconChangedTimer); iconChangedTimer = NULL;
+			if(sectionChangedTimer)
+				SDL_RemoveTimer(sectionChangedTimer);
+			sectionChangedTimer = NULL;
+			if(iconChangedTimer)
+				SDL_RemoveTimer(iconChangedTimer);
+			iconChangedTimer = NULL;
 			icon_changed = section_changed = 0;
 		}
 
@@ -967,13 +975,15 @@ void Menu::exec() {
 			(gmenu2x->input->isActive(LEFT) || gmenu2x->input->isActive(RIGHT) || gmenu2x->input->isActive(LEFT) || gmenu2x->input->isActive(RIGHT) || gmenu2x->input->isActive(UP) || gmenu2x->input->isActive(DOWN) || gmenu2x->input->isActive(SECTION_PREV) || gmenu2x->input->isActive(SECTION_NEXT))
 		) {
 			icon_changed = SDL_GetTicks();
-			SDL_RemoveTimer(iconChangedTimer); iconChangedTimer = NULL;
+			if(iconChangedTimer)
+				SDL_RemoveTimer(iconChangedTimer);
 			iconChangedTimer = SDL_AddTimer(1000, gmenu2x->input->wakeUp, (void*)false);
 		}
 
 		if (gmenu2x->skinConfInt["sectionLabel"] && (gmenu2x->input->isActive(SECTION_PREV) || gmenu2x->input->isActive(SECTION_NEXT))) {
 			section_changed = SDL_GetTicks();
-			SDL_RemoveTimer(sectionChangedTimer); sectionChangedTimer = NULL;
+			if(sectionChangedTimer)
+				SDL_RemoveTimer(sectionChangedTimer);
 			sectionChangedTimer = SDL_AddTimer(2000, gmenu2x->input->wakeUp, (void*)false);
 		}
 	}

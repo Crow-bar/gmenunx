@@ -55,7 +55,7 @@ public:
 	void exec(uint32_t timeOut);
 	void clearTimer();
 	static uint32_t execTimer(uint32_t interval, void *param);
-	SDL_TimerID popupTimer;
+	SDL_TimerID popupTimer = NULL;
 };
 
 #endif /*MESSAGEBOX_H_*/

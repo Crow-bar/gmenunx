@@ -259,7 +259,9 @@ void MessageBox::exec(uint32_t timeOut) {
 }
 
 void MessageBox::clearTimer() {
-	SDL_RemoveTimer(popupTimer); popupTimer = NULL;
+	if(popupTimer)
+		SDL_RemoveTimer(popupTimer);
+	popupTimer = NULL;
 }
 
 uint32_t MessageBox::execTimer(uint32_t interval, void *param) {

@@ -51,7 +51,8 @@ private:
 	Surface *iconBGoff, *iconBGon;
 	string iconDescription = "";
 
-	SDL_TimerID sectionChangedTimer, iconChangedTimer;
+	SDL_TimerID sectionChangedTimer = NULL;
+	SDL_TimerID iconChangedTimer = NULL;
 
 	void drawIcon(int i, int ix, int iy, bool selected);
 	void drawList();
