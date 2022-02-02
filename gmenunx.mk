@@ -20,7 +20,8 @@ CFLAGS += -D_GLIBCXX_USE_CXX11_ABI=0
 LDFLAGS += -Wl,-Bdynamic -lz $(SDL_LIBS) -lSDL_image -lSDL_ttf
 LDFLAGS += -Wl,--as-needed -Wl,--gc-sections
 
-OBJDIR = /tmp/gmenunx/$(PLATFORM)
+BUILDDIR = build
+OBJDIR = $(BUILDDIR)/gmenunx/$(PLATFORM)
 DISTDIR = dist/$(PLATFORM)
 TARGET = dist/$(PLATFORM)/gmenunx
 
@@ -51,7 +52,7 @@ shared: debug
 
 clean:
 	rm -rf $(OBJDIR) $(DISTDIR) *.gcda *.gcno $(TARGET) $(TARGET)-debug
-	rm -rf /tmp/.gmenu-ipk/ dist/gmenunx-$(PLATFORM).zip dist/gmenunx-$(PLATFORM).ipk
+	rm -rf $(BUILDDIR)/.gmenu-ipk/ dist/gmenunx-$(PLATFORM).zip dist/gmenunx-$(PLATFORM).ipk
 
 dist: dir shared
 	install -m644 -D about.txt $(DISTDIR)/about.txt
@@ -66,13 +67,13 @@ zip: dist
 	cd $(DISTDIR)/ && rm -f ../gmenunx-$(PLATFORM).zip && zip -r ../gmenunx-$(PLATFORM).zip skins translations COPYING gmenunx input.conf gmenunx.conf about.txt
 
 ipk: dist
-	rm -rf /tmp/.gmenu-ipk/; mkdir -p /tmp/.gmenu-ipk/
-	sed "s/^Version:.*/Version: $$(date +%Y%m%d)/" assets/control > /tmp/.gmenu-ipk/control
-	cp assets/conffiles /tmp/.gmenu-ipk/
-	echo -e "#!/bin/sh\nsync; echo -e 'Installing gmenunx..'; mount -o remount,rw /; rm /var/lib/opkg/info/gmenunx.list; exit 0" > /tmp/.gmenu-ipk/preinst
-	echo -e "#!/bin/sh\nsync; mount -o remount,ro /; echo -e 'Installation finished.\nRestarting gmenunx..'; sleep 1; killall gmenunx; exit 0" > /tmp/.gmenu-ipk/postinst
-	chmod +x /tmp/.gmenu-ipk/postinst /tmp/.gmenu-ipk/preinst
-	tar --owner=0 --group=0 -czvf /tmp/.gmenu-ipk/control.tar.gz -C /tmp/.gmenu-ipk/ control conffiles postinst preinst
-	tar --owner=0 --group=0 -czvf /tmp/.gmenu-ipk/data.tar.gz -C $(DISTDIR) about.txt COPYING gmenunx gmenunx.conf input.conf skins translations
-	echo 2.0 > /tmp/.gmenu-ipk/debian-binary
-	ar r dist/gmenunx-$(PLATFORM).ipk /tmp/.gmenu-ipk/control.tar.gz /tmp/.gmenu-ipk/data.tar.gz /tmp/.gmenu-ipk/debian-binary
+	rm -rf $(BUILDDIR)/.gmenu-ipk/; mkdir -p $(BUILDDIR)/.gmenu-ipk/
+	sed "s/^Version:.*/Version: $$(date +%Y%m%d)/" assets/control > $(BUILDDIR)/.gmenu-ipk/control
+	cp assets/conffiles $(BUILDDIR)/.gmenu-ipk/
+	echo -e "#!/bin/sh\nsync; echo -e 'Installing gmenunx..'; mount -o remount,rw /; rm /var/lib/opkg/info/gmenunx.list; exit 0" > $(BUILDDIR)/.gmenu-ipk/preinst
+	echo -e "#!/bin/sh\nsync; mount -o remount,ro /; echo -e 'Installation finished.\nRestarting gmenunx..'; sleep 1; killall gmenunx; exit 0" > $(BUILDDIR)/.gmenu-ipk/postinst
+	chmod +x $(BUILDDIR)/.gmenu-ipk/postinst $(BUILDDIR)/.gmenu-ipk/preinst
+	tar --owner=0 --group=0 -czvf $(BUILDDIR)/.gmenu-ipk/control.tar.gz -C $(BUILDDIR)/.gmenu-ipk/ control conffiles postinst preinst
+	tar --owner=0 --group=0 -czvf $(BUILDDIR)/.gmenu-ipk/data.tar.gz -C $(DISTDIR) about.txt COPYING gmenunx gmenunx.conf input.conf skins translations
+	echo 2.0 > $(BUILDDIR)/.gmenu-ipk/debian-binary
+	ar r dist/gmenunx-$(PLATFORM).ipk $(BUILDDIR)/.gmenu-ipk/control.tar.gz $(BUILDDIR)/.gmenu-ipk/data.tar.gz $(BUILDDIR)/.gmenu-ipk/debian-binary

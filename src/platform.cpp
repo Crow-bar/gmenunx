@@ -3,6 +3,7 @@
 #include "platform/opendingux.h"
 #include "platform/miyoo.h"
 #include "platform/gkd350h.h"
+#include "platform/q400.h"
 // #include "platform/gp2x.h"
 
 Platform::Platform(GMenu2X *gmenu2x) : gmenu2x(gmenu2x) { }
@@ -19,6 +20,9 @@ uint16_t Platform::getDevices() {
 }
 
 Platform* PlatformInit(GMenu2X *gmenu2x) { // Detect platform type and return base class pointer
+#if TARGET_Q400
+	return new Q400(gmenu2x);
+#else
 	if (file_exists("/proc/jz/gpio")) {
 		return new RetroFW(gmenu2x);
 	}
@@ -36,4 +40,5 @@ Platform* PlatformInit(GMenu2X *gmenu2x) { // Detect platform type and return ba
 	}
 
 	return new Platform(gmenu2x);
+#endif
 }

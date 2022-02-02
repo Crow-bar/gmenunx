@@ -1335,6 +1335,7 @@ void GMenu2X::editLink() {
 	string dialogIcon = menu->getLinkApp()->getIconPath();
 	string linkDir = dir_name(linkExec);
 	int linkGamma = menu->getLinkApp()->getGamma();
+	bool linkTerminal = menu->getLinkApp()->getTerminal();
 	// string linkHomeDir = menu->getLinkApp()->getHomeDir();
 
 	vector<string> scaleMode;
@@ -1360,8 +1361,8 @@ void GMenu2X::editLink() {
 
 	SettingsDialog sd(this, /*ts,*/ dialogTitle, dialogIcon);
 
-	// sd.addSetting(new MenuSettingFile(this,		tr["Executable"],	tr["Application this link points to"], &linkExec, ".dge,.gpu,.gpe,.sh,.bin,.opk,.elf,", linkExec, dialogTitle, dialogIcon));
-	sd.addSetting(new MenuSettingString(this,		tr["Title"],			tr["Link title"], &linkTitle, dialogTitle, dialogIcon));
+	sd.addSetting(new MenuSettingFile(this,			tr["Executable"],	tr["Application this link points to"], &linkExec, ".dge,.gpu,.gpe,.sh,.bin,.opk,.elf,", linkExec, dialogTitle, dialogIcon));
+	sd.addSetting(new MenuSettingString(this,		tr["Title"],		tr["Link title"], &linkTitle, dialogTitle, dialogIcon));
 	sd.addSetting(new MenuSettingString(this,		tr["Description"],	tr["Link description"], &linkDescription, dialogTitle, dialogIcon));
 	sd.addSetting(new MenuSettingMultiString(this,	tr["Section"],		tr["The section this link belongs to"], &newSection, menu->getSections()));
 	sd.addSetting(new MenuSettingString(this,		tr["Parameters"],	tr["Command line arguments to pass to the application"], &linkParams, dialogTitle, dialogIcon));
@@ -1388,6 +1389,7 @@ void GMenu2X::editLink() {
 	if (platform->gamma) {
 		sd.addSetting(new MenuSettingInt(this,		tr["Gamma"],			tr["Gamma value to set when launching this link"], &linkGamma, 50, 0, 100 ));
 	}
+	sd.addSetting(new MenuSettingBool(this,			tr["Display Console"],	tr["Must be enabled for console-based applications"], &linkTerminal));
 
 	if (sd.exec() && sd.edited() && sd.save) {
 		menu->getLinkApp()->setExec(linkExec);
@@ -1417,6 +1419,7 @@ void GMenu2X::editLink() {
 		menu->getLinkApp()->setBackdrop(linkBackdrop);
 		menu->getLinkApp()->setCPU(linkClock);
 		menu->getLinkApp()->setGamma(linkGamma);
+		menu->getLinkApp()->setTerminal(linkTerminal);
 
 		// if section changed move file and update link->file
 		if (oldSection != newSection) {

@@ -38,7 +38,7 @@ void PowerManager::resetSuspendTimer() {
 
 void PowerManager::resetPowerTimer() {
 	clearTimer();
-	if (this->powerTimeout > 0 && PowerManager::instance->gmenu2x->platform->opk != "linux")
+	if (this->powerTimeout > 0 && PowerManager::instance->gmenu2x->platform->poweroff)
 		powerTimer = SDL_AddTimer(this->powerTimeout * 60e3, doPowerOff, NULL);
 };
 

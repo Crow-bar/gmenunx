@@ -359,11 +359,12 @@ void LinkApp::launch(const string &selectedFile, string dir) {
 	INFO("Executing '%s' (%s %s)", title.c_str(), exec.c_str(), params.c_str());
 
 	if (package_type == PKG_OPK) {
-		string opk_mount = "umount -fl /mnt &> /dev/null; mount -o loop " + command + " /mnt";
+		string opk_mount = "umount -fl " + gmenu2x->platform->mount_point + 
+					" &> /dev/null; mount -o loop " + command + " " + gmenu2x->platform->mount_point;
 		system(opk_mount.c_str());
-		chdir("/mnt"); // Set correct working directory
+		chdir(gmenu2x->platform->mount_point.c_str()); // Set correct working directory
 
-		command = "/mnt/" + params;
+		command = gmenu2x->platform->mount_point + "/" + params;
 		params = "";
 	}
 

@@ -45,6 +45,7 @@ public:
 	bool battery = true;
 	bool volume = true;
 	bool backlight = true;
+	bool poweroff = true;
 	int cpu_menu = 0;
 	int cpu_link = 0;
 	int cpu_max = 0;
@@ -53,6 +54,7 @@ public:
 	string opk = "linux";
 	string data_path;
 	string home_path;
+	string mount_point = "/mnt";
 	uint32_t w = 480, h = 272, bpp = 16;
 
 	virtual uint16_t getDevices();
